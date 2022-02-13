@@ -5,7 +5,7 @@ import socket
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65432        # The port used by the server
 
-TYPE = "GET_ONE"
+TYPE = "GET_LIST"
 FILE_NAME = "OnePiece.jpg"
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -23,4 +23,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     if not data:
                         break
                     file.write(data)
-                    
+
+    if (TYPE == "GET_LIST"):
+        sock.send(TYPE.encode())
+        dir_string = sock.recv(16777216).decode()
+        dir_list = dir_string.split(",")
+        dir_list.remove("SocketServer.py")
+        print("Arquivos no servidor:")
+        for dir in dir_list:
+            print(dir)
+
