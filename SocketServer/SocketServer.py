@@ -23,7 +23,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
 			with open(FILE_NAME, 'rb') as file:
 				for data in file.readlines():
-					print(type(data))
 					conn.send(data)
 
 	if (TYPE == "GET_LIST"):
@@ -41,3 +40,16 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 						dir_string = dir_string + "," + file			
 			conn.send(dir_string.encode())
 
+	if (TYPE == "PUT_ONE"):
+		conn.send("OK".encode())
+
+		with conn:
+			print('Connected by', addr)
+			FILE_NAME = conn.recv(1024).decode()
+			if FILE_NAME:
+				with open(FILE_NAME, 'wb') as file:
+					while (True):
+						data = conn.recv(16777216)
+						if not data:
+							break
+						file.write(data)

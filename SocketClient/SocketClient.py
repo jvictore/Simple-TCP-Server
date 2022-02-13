@@ -5,7 +5,7 @@ import socket
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65432        # The port used by the server
 
-TYPE = "GET_LIST"
+TYPE = "PUT_ONE"
 FILE_NAME = "OnePiece.jpg"
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -33,3 +33,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         for dir in dir_list:
             print(dir)
 
+    if (TYPE == "PUT_ONE"):
+        sock.send(TYPE.encode())
+        response = sock.recv(1024)
+        if (response.decode() == 'OK'):
+            
+            # envia o nome do arquivo
+            sock.send(FILE_NAME.encode())
+            
+            # envia o arquivo
+            with open(FILE_NAME, 'rb') as file:
+                for data in file.readlines():
+                    sock.send(data)
